@@ -1,0 +1,107 @@
+#!/bin/bash
+#
+# Stay Script - Universal Launcher
+# Description: Detects the operating system and launches the appropriate Stay script
+# Author: snowcatman
+# Version: 1.0
+
+# Function to show usage
+show_usage() {
+    echo "Stay - Universal Launcher"
+    echo "Usage: Stay <command>"
+    echo ""
+    echo "This script automatically detects your operating system and"
+    echo "launches the appropriate version of Stay."
+    echo ""
+    echo "Supported platforms:"
+    echo "  - Windows (PowerShell and CMD)"
+    echo "  - macOS"
+    echo "  - Linux"
+    echo ""
+    echo "Examples:"
+    echo "  Stay echo 'Hello World'"
+    echo "  Stay ls -la"
+    echo "  Stay python script.py"
+}
+
+# Function to detect operating system
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)     echo "linux" ;;
+        Darwin*)    echo "mac" ;;
+        CYGWIN*|MINGW*|MSYS*) echo "windows" ;;
+        *)          echo "unknown" ;;
+    esac
+}
+
+# Function to get script directory
+get_script_dir() {
+    # Handle different shell environments
+    if [ -n "${BASH_SOURCE:-}" ]; then
+        dirname "${BASH_SOURCE[0]}"
+    elif [ -n "${ZSH_VERSION:-}" ]; then
+        dirname "${(%):-%x}"
+    else
+        dirname "$0"
+    fi
+}
+
+# Main execution
+if [ $# -eq 0 ]; then
+    show_usage
+    exit 1
+fi
+
+# Check for help flags
+case "$1" in
+    -h|--help|help)
+        show_usage
+        exit 0
+        ;;
+esac
+
+# Detect operating system
+os=$(detect_os)
+script_dir=$(get_script_dir)
+
+echo "Stay: Detected OS: $os"
+
+# Launch appropriate script based on OS
+case "$os" in
+    "linux")
+        if [ -f "$script_dir/Stay-linux.sh" ]; then
+            chmod +x "$script_dir/Stay-linux.sh"
+            "$script_dir/Stay-linux.sh" "$@"
+        else
+            echo "Error: Linux script not found at $script_dir/Stay-linux.sh"
+            exit 1
+        fi
+        ;;
+    "mac")
+        if [ -f "$script_dir/Stay-mac.sh" ]; then
+            chmod +x "$script_dir/Stay-mac.sh"
+            "$script_dir/Stay-mac.sh" "$@"
+        else
+            echo "Error: macOS script not found at $script_dir/Stay-mac.sh"
+            exit 1
+        fi
+        ;;
+    "windows")
+        # On Windows, prefer PowerShell if available, otherwise use CMD
+        if command -v powershell >/dev/null 2>&1 && [ -f "$script_dir/Stay.ps1" ]; then
+            echo "Stay: Using PowerShell version"
+            powershell.exe -ExecutionPolicy Bypass -File "$script_dir/Stay.ps1" "$@"
+        elif [ -f "$script_dir/Stay.bat" ]; then
+            echo "Stay: Using CMD version"
+            cmd /c "$script_dir/Stay.bat" "$@"
+        else
+            echo "Error: No Windows script found (expected Stay.ps1 or Stay.bat)"
+            exit 1
+        fi
+        ;;
+    "unknown")
+        echo "Error: Unsupported operating system"
+        echo "Supported: Linux, macOS, Windows"
+        exit 1
+        ;;
+esac

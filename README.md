@@ -1,6 +1,17 @@
 # Stay Script
 
-A Bash script that opens a terminal window, runs a command, and keeps the terminal open after the command completes.
+A cross-platform utility that opens a new terminal window, runs a command, and keeps the terminal open after the command completes.
+
+## 🚀 Multi-Platform Support
+
+**NEW: Now works on Windows, macOS, and Linux!**
+
+- **Linux**: `Stay-linux.sh` - Improved version with terminal auto-detection
+- **macOS**: `Stay-mac.sh` - Native Terminal.app support  
+- **Windows**: `Stay.ps1` (PowerShell) and `Stay.bat` (CMD)
+- **Universal**: `Stay` - Auto-detects OS and launches appropriate version
+
+**Original Linux version with D-Bus support**: `Stay.sh` (still available for advanced users)
 
 ## Features
 
@@ -12,13 +23,38 @@ A Bash script that opens a terminal window, runs a command, and keeps the termin
 
 ## Usage
 
+### Universal (Recommended)
 ```bash
-Stay <command>
+# Works on all platforms
+./Stay echo "Hello World"
+./Stay ls -la
+./Stay python script.py
 ```
 
-Example:
+### Platform-Specific
+```bash
+# Linux (improved version)
+./Stay-linux.sh echo "Hello World"
+
+# macOS
+./Stay-mac.sh echo "Hello World"
+
+# Windows PowerShell
+.\Stay.ps1 echo "Hello World"
+
+# Windows CMD
+Stay.bat echo "Hello World"
+
+# Original Linux (D-Bus version)
+./Stay.sh echo "Hello World"
+```
+
+### Quick Examples
 ```bash
 Stay echo "Hello World"
+Stay python server.py
+Stay npm start
+Stay make build
 ```
 
 ## Environment Handling
@@ -62,24 +98,73 @@ The script handles these key environment variables:
 
 ## Installation
 
-1. Copy the script to `/usr/local/bin/`:
+### Universal Installation
+1. Download all files to your preferred directory
+2. Add the directory to your PATH
+3. Use `Stay` command from anywhere
+
+### Platform-Specific Installation
+
+**Linux/macOS:**
 ```bash
-sudo cp stay-bck003.sh /usr/local/bin/Stay
+# Universal launcher
+sudo cp Stay /usr/local/bin/
+sudo chmod +x /usr/local/bin/Stay
+
+# Or platform-specific
+sudo cp Stay-linux.sh /usr/local/bin/Stay
+sudo chmod +x /usr/local/bin/Stay
 ```
 
-2. Make it executable:
-```bash
-sudo chmod +x /usr/local/bin/Stay
+**Windows PowerShell:**
+```powershell
+# Add to PATH or copy to system directory
+$env:PATH += ";C:\path\to\stay"
+```
+
+**Windows CMD:**
+```cmd
+# Add to PATH or copy to system directory
+set PATH=%PATH%;C:\path\to\stay
 ```
 
 ## Requirements
 
+### Universal Requirements
+- Basic shell environment (bash, PowerShell, or CMD)
+
+### Platform-Specific Requirements
+
+**Linux:**
+- Any terminal emulator (gnome-terminal, konsole, xterm, xfce4-terminal, mate-terminal, lxterminal)
+- Bash shell
+
+**macOS:**
+- Terminal.app
+- osascript (built-in)
+
+**Windows:**
+- PowerShell 5.0+ (for .ps1 version)
+- CMD (for .bat version)
+
+**Original Linux Version (Stay.sh):**
 - Bash shell
 - `gnome-terminal`
 - `loginctl` (for root environment handling)
+- D-Bus session support
 
 ## Recent Improvements
 
+### Version 2.0 - Multi-Platform Release
+- ✅ **Cross-platform support**: Windows, macOS, Linux
+- ✅ **Universal launcher**: Auto-detects operating system
+- ✅ **No D-Bus dependency**: Improved Linux version with fallback terminals
+- ✅ **Windows native support**: PowerShell and CMD versions
+- ✅ **macOS integration**: Native Terminal.app support
+- ✅ **Better error handling**: Clear messages and cleanup
+- ✅ **Terminal auto-detection**: Finds available terminals on Linux
+
+### Version 1.0 - Original Linux Version
 - Added support for full root environment (`sudo -i`)
 - Improved D-Bus session handling
 - Better environment variable management
@@ -88,11 +173,39 @@ sudo chmod +x /usr/local/bin/Stay
 
 ## Troubleshooting
 
-If you encounter issues:
-1. Ensure you have the required dependencies installed
-2. Check that the script has execute permissions
-3. Verify that you're using a supported terminal emulator
-4. Check the system logs for any D-Bus or X11 errors
+### Universal Issues
+- Ensure the script has execute permissions (Linux/macOS)
+- Check that the target directory is in your PATH
+- Verify you're using the correct script for your platform
+
+### Linux Issues
+```bash
+# If no terminal found, install one:
+sudo apt install gnome-terminal  # Ubuntu/Debian
+sudo dnf install gnome-terminal  # Fedora
+```
+
+### macOS Issues
+```bash
+# If osascript fails, check Terminal permissions:
+# System Preferences > Security & Privacy > Privacy > Automation
+```
+
+### Windows Issues
+```powershell
+# Enable PowerShell scripts:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+### Original Linux Version (D-Bus Issues)
+If you encounter D-Bus errors with `Stay.sh`:
+1. Use the improved `Stay-linux.sh` instead
+2. Ensure you have the required dependencies installed
+3. Check that the script has execute permissions
+4. Verify that you're using a supported terminal emulator
+5. Check the system logs for any D-Bus or X11 errors
+
+For detailed troubleshooting, see `errors.md` and `README-MultiPlatform.md`.
 
 ## Development History
 
